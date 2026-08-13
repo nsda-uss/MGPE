@@ -9,18 +9,24 @@ Todos los archivos están en la misma carpeta — no hay subcarpetas.
 ## Estructura
 
 ```
-index.html              Página de inicio
-belbin_test.html         Test de Roles de Equipo (Belbin)
-plan_trabajo.html        Constructor de Plan de Trabajo
-contrato_equipo.html     Contrato de Equipo
-tuckman.html             Etapas de Equipo (Tuckman)
-liderazgo_test.html      (pendiente de agregar)
+index.html                       Página de inicio
+belbin_test.html                  Test de Roles de Equipo (Belbin)
+plan_trabajo.html                 Guía del Plan de Trabajo + descarga de plantilla
+contrato_equipo.html              Guía del Contrato de Equipo + descarga de plantilla
+tuckman.html                      Etapas de Equipo (Tuckman)
+liderazgo_test.html               (pendiente de agregar)
 
-sidebar.css              Estilos de la barra lateral
-sidebar.js                Barra lateral compartida: contiene el HTML del
-                          menú y el script que lo inyecta y marca la
-                          página activa
+plan_trabajo_plantilla.xlsx       Plantilla descargable (Excel)
+contrato_equipo_plantilla.docx    Plantilla descargable (Word)
+
+sidebar.css                       Estilos de la barra lateral
+sidebar.js                         Barra lateral compartida
 ```
+
+`plan_trabajo.html` y `contrato_equipo.html` son guías de lectura, no
+formularios: explican qué poner en cada sección y ofrecen un botón para
+descargar la plantilla real (Excel y Word respectivamente), que el equipo
+completa fuera del sitio, en su propio computador.
 
 La barra lateral vive en **`sidebar.js`**. Cada página solo tiene un
 `<div id="sidebar-placeholder"></div>` y carga `sidebar.js`, que la

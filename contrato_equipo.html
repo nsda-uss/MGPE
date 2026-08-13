@@ -26,40 +26,42 @@
 
   .container { max-width: 900px; margin: 0 auto; padding: 24px 6vw 80px; }
 
-  .section-card { background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--teal); border-radius: 4px; padding: 26px 24px; margin-bottom: 22px; }
-  .section-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; color: var(--navy-deep); margin-bottom: 4px; }
-  .section-num { font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color: var(--teal-deep); font-weight:700; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:6px; }
-  .section-subtitle { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .intro-card { background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--teal); border-radius: 4px; padding: 26px 24px; margin-bottom: 22px; }
+  .intro-card p { font-size: 0.9rem; line-height: 1.65; color: var(--muted); margin-bottom: 10px; }
+  .intro-card p:last-child { margin-bottom: 0; }
+  .intro-card strong { color: var(--navy-deep); }
 
-  label { display:block; font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.04em; text-transform:uppercase; color: var(--muted); margin-bottom:6px; }
-  input[type=text], input[type=date], input[type=email], textarea, select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 3px; font-size: 0.88rem; font-family: 'Inter', sans-serif; background:#fff; color:var(--ink); }
-  textarea { resize: vertical; min-height: 56px; }
-  .field { margin-bottom: 14px; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
+  .download-card {
+    background: linear-gradient(135deg, var(--navy-deep), var(--navy));
+    border-radius: 6px; padding: 30px 28px; margin-bottom: 30px;
+    display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+  }
+  .download-icon { flex-shrink: 0; width: 54px; height: 54px; border-radius: 8px; background: rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; }
+  .download-icon svg { width: 28px; height: 28px; color: #fff; }
+  .download-body { flex: 1; min-width: 220px; }
+  .download-body .dl-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: #a9c9c5; margin-bottom: 4px; }
+  .download-body .dl-title { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .download-body .dl-desc { font-size: 0.82rem; color: #cfe0dd; }
+  .download-btn {
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px;
+    background: #fff; color: var(--navy-deep); font-weight: 700; font-size: 0.88rem;
+    padding: 13px 22px; border-radius: 4px; text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 
-  .integrante-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
-  @media (max-width:640px){ .integrante-row { grid-template-columns: 1fr; background:var(--paper); padding:10px; border-radius:3px; } }
-  .icon-btn { background: none; border: 1px solid var(--line); border-radius: 3px; color: #b0413e; width: 34px; height: 34px; cursor: pointer; font-size: 1rem; flex-shrink:0; }
-  .icon-btn:hover { background: #fdeceb; }
-  .add-link { display: inline-block; margin-top: 6px; font-family:'IBM Plex Mono', monospace; font-size: 0.76rem; color: var(--teal-deep); background: none; border: none; cursor: pointer; font-weight:600; padding: 6px 0; }
-  .add-link:hover { text-decoration: underline; }
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 30px 0 14px; }
 
-  .radio-group, .checkbox-group { display:flex; flex-direction:column; gap:8px; }
-  .radio-option, .checkbox-option { display:flex; align-items:flex-start; gap:8px; font-size:0.86rem; color:var(--ink); cursor:pointer; }
-  .radio-option input, .checkbox-option input { margin-top:3px; flex-shrink:0; width:auto; }
+  .guide-card { background: var(--paper-raised); border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 4px; padding: 22px 24px; margin-bottom: 14px; }
+  .guide-card .g-num { font-family:'IBM Plex Mono', monospace; font-size:0.66rem; color: var(--teal-deep); font-weight:700; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:4px; }
+  .guide-card .g-title { font-family: 'Fraunces', serif; font-size: 1.02rem; font-weight: 600; color: var(--navy-deep); margin-bottom: 6px; }
+  .guide-card .g-desc { font-size: 0.86rem; color: var(--muted); line-height: 1.55; margin-bottom: 8px; }
+  .guide-card ul.g-questions { list-style: none; margin-top: 6px; }
+  .guide-card ul.g-questions li { font-size: 0.84rem; color: var(--ink); padding: 4px 0 4px 18px; position: relative; }
+  .guide-card ul.g-questions li::before { content: '?'; position:absolute; left:0; color: var(--gold-deep); font-weight:700; }
+  .guide-card .g-tip { margin-top: 10px; font-size: 0.8rem; color: var(--teal-deep); background: #f2f8f7; border-radius: 3px; padding: 8px 12px; }
 
-  .btn { display: block; width: 100%; padding: 13px; background: var(--teal); color: #fff; border: none; border-radius: 3px; font-size: 0.92rem; font-weight: 600; cursor: pointer; margin-top: 10px; letter-spacing: 0.01em; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-  .btn.secondary { background: #fff; color: var(--navy-deep); border: 1px solid var(--line); }
-  .btn.secondary:hover { border-color: var(--teal); }
-  .btn-row { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  @media (max-width:640px){ .btn-row { grid-template-columns: 1fr; } }
-
-  #contractArea { display:none; }
-  #contractArea pre { white-space: pre-wrap; font-family:'IBM Plex Mono', monospace; font-size: 0.78rem; line-height:1.6; background: var(--paper); border:1px solid var(--line); border-radius:3px; padding:16px; color: var(--ink); }
-
-  .intro-note { font-size:0.85rem; color:var(--muted); background:#fbf6ec; border:1px solid #eadfc4; border-radius:4px; padding:14px 16px; margin-bottom:22px; }
+  .footnote { margin-top: 26px; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
 </style>
 <link rel="stylesheet" href="sidebar.css">
 </head>
@@ -67,233 +69,84 @@
 <div id="sidebar-placeholder"></div>
 
 <div class="page-head">
-  <div class="eyebrow">PROYECTO DE GRADO · HERRAMIENTA DE EQUIPO</div>
+  <div class="eyebrow">PROYECTO DE GRADO · GUÍA DE EQUIPO</div>
   <h1>Contrato de Equipo</h1>
-  <p class="lede">Acuerden por escrito cómo van a trabajar juntos durante todo el proyecto de grado, antes de que aparezcan los primeros desacuerdos.</p>
+  <p class="lede">Cómo acordar por escrito la forma en que van a trabajar juntos, antes de que aparezcan los primeros desacuerdos.</p>
 </div>
 
-<div class="container" id="app">
+<div class="container">
 
-  <div class="intro-note">💡 Un contrato de equipo no reemplaza la confianza entre compañeros — la ordena. Respóndanlo juntos, en una reunión, no cada uno por separado. Lo que definan aquí puede revisarse y ajustarse más adelante si el equipo lo acuerda.</div>
-
-  <div class="section-card">
-    <div class="section-num">01 · Datos del equipo</div>
-    <div class="section-title">Identificación</div>
-    <div class="section-subtitle">Proyecto e integrantes que firman este acuerdo</div>
-    <div class="field"><label>Nombre del proyecto</label><input type="text" id="nombreProyecto" placeholder="Ej: Fortalecimiento del liderazgo en Constructora XYZ"></div>
-    <label>Integrantes del equipo</label>
-    <div id="integrantesList"></div>
-    <button class="add-link" onclick="addIntegrante()">+ Agregar integrante</button>
+  <div class="intro-card">
+    <p>Un contrato de equipo no reemplaza la confianza entre compañeros — la ordena. Es un acuerdo simple que responden <strong>todos juntos, en una reunión</strong>, sobre cómo se van a comunicar, decidir y resolver conflictos durante el proyecto.</p>
+    <p>Abajo tienes la plantilla en Word para descargar, y una guía de qué conversar en cada sección antes de completarla.</p>
   </div>
 
-  <div class="section-card">
-    <div class="section-num">02 · Comunicación</div>
-    <div class="section-title">¿Cómo nos vamos a comunicar?</div>
-    <div class="section-subtitle">Canal, frecuencia y tiempos de respuesta esperados</div>
-    <div class="field-row">
-      <div class="field"><label>Canal principal de comunicación</label><input type="text" id="canalComunicacion" placeholder="Ej: Grupo de WhatsApp + correo para temas formales"></div>
-      <div class="field"><label>Frecuencia de reuniones</label><input type="text" id="frecuenciaReuniones" placeholder="Ej: Todos los martes 19:00 hrs, virtual"></div>
+  <div class="download-card">
+    <div class="download-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     </div>
-    <div class="field"><label>Tiempo máximo de respuesta a un mensaje del equipo</label><input type="text" id="tiempoRespuesta" placeholder="Ej: 24 horas en días hábiles"></div>
-    <div class="field"><label>¿Qué hacemos si alguien no puede asistir a una reunión?</label><textarea id="protocoloAusencia" placeholder="Ej: Avisar con al menos 12 horas de anticipación y ponerse al día con la minuta"></textarea></div>
-  </div>
-
-  <div class="section-card">
-    <div class="section-num">03 · Toma de decisiones</div>
-    <div class="section-title">¿Cómo decidimos cuando no estamos de acuerdo?</div>
-    <div class="section-subtitle">Elijan el método que mejor represente cómo quieren trabajar</div>
-    <div class="radio-group" id="metodoDecisionGroup">
-      <label class="radio-option"><input type="radio" name="metodoDecision" value="Consenso: seguimos discutiendo hasta que todos estén de acuerdo"> Consenso: seguimos discutiendo hasta que todos estén de acuerdo</label>
-      <label class="radio-option"><input type="radio" name="metodoDecision" value="Mayoría simple: se vota y gana la opción más votada"> Mayoría simple: se vota y gana la opción más votada</label>
-      <label class="radio-option"><input type="radio" name="metodoDecision" value="Rol coordinador: una persona decide en caso de empate, escuchando a todos antes"> Rol coordinador: una persona decide en caso de empate, escuchando a todos antes</label>
-      <label class="radio-option"><input type="radio" name="metodoDecision" value="Consultamos al profesor guía cuando no logramos acuerdo"> Consultamos al profesor guía cuando no logramos llegar a un acuerdo</label>
+    <div class="download-body">
+      <div class="dl-label">Plantilla · Word (.docx)</div>
+      <div class="dl-title">Contrato de Equipo — Proyecto de Grado</div>
+      <div class="dl-desc">Lista para completar a mano o en el computador, con espacio de firma para todos los integrantes.</div>
     </div>
+    <a class="download-btn" href="contrato_equipo_plantilla.docx" download>
+      ⬇ Descargar plantilla
+    </a>
   </div>
 
-  <div class="section-card">
-    <div class="section-num">04 · Calidad y plazos</div>
-    <div class="section-title">Estándares de trabajo</div>
-    <div class="section-subtitle">Compromisos sobre entregas y revisión del trabajo de cada uno</div>
-    <div class="field"><label>¿Con cuánta anticipación entregamos nuestra parte para que otros la revisen?</label><input type="text" id="anticipacionEntrega" placeholder="Ej: 48 horas antes de la fecha límite del profesor guía"></div>
-    <div class="field"><label>¿Quién revisa el trabajo de cada integrante antes de enviarlo?</label><input type="text" id="revisionCruzada" placeholder="Ej: Revisión cruzada entre dos integrantes distintos cada vez"></div>
-    <div class="field"><label>¿Qué esperamos si alguien no cumple con una tarea o un plazo?</label><textarea id="expectativaIncumplimiento" placeholder="Ej: Avisar apenas se detecte el atraso, no el mismo día de la entrega"></textarea></div>
+  <div class="section-label">Guía por sección</div>
+
+  <div class="guide-card">
+    <div class="g-num">0 · Datos del equipo</div>
+    <div class="g-title">¿Quiénes forman parte de este acuerdo?</div>
+    <div class="g-desc">Anoten a todos los integrantes del equipo. Si ya hicieron el test de Roles de Equipo (Belbin) o el de Liderazgo, pueden anotar el rol de cada uno — ayuda a recordar las fortalezas de cada persona más adelante.</div>
   </div>
 
-  <div class="section-card">
-    <div class="section-num">05 · Manejo de conflictos</div>
-    <div class="section-title">Si surge un desacuerdo o un conflicto, ¿qué pasos seguimos?</div>
-    <div class="section-subtitle">Definan una escalada simple, de menor a mayor formalidad</div>
-    <div class="field"><label>Paso 1: primero conversamos directamente</label><input type="text" id="pasoConflicto1" placeholder="Ej: Hablarlo entre las personas involucradas dentro de las siguientes 48 horas"></div>
-    <div class="field"><label>Paso 2: si no se resuelve, involucramos al equipo completo</label><input type="text" id="pasoConflicto2" placeholder="Ej: Ponerlo como punto en la siguiente reunión de equipo"></div>
-    <div class="field"><label>Paso 3: si sigue sin resolverse, pedimos apoyo externo</label><input type="text" id="pasoConflicto3" placeholder="Ej: Solicitar una reunión con el profesor guía para mediar"></div>
+  <div class="guide-card">
+    <div class="g-num">1 · Comunicación</div>
+    <div class="g-title">¿Cómo nos vamos a comunicar?</div>
+    <ul class="g-questions">
+      <li>¿Cuál va a ser el canal principal (WhatsApp, correo, otro)?</li>
+      <li>¿Con qué frecuencia se van a reunir, y en qué formato?</li>
+      <li>¿Cuánto tiempo es razonable esperar una respuesta a un mensaje del equipo?</li>
+      <li>¿Qué hacen si alguien no puede asistir a una reunión?</li>
+    </ul>
+    <div class="g-tip">💡 Sean concretos: "avisar con 12 horas de anticipación" es más útil que "avisar con tiempo".</div>
   </div>
 
-  <div class="section-card">
-    <div class="section-num">06 · Compromiso</div>
-    <div class="section-title">Firma del equipo</div>
-    <div class="section-subtitle">Cada integrante declara haber participado en este acuerdo y comprometerse a cumplirlo</div>
-    <div class="field"><label>Fecha del acuerdo</label><input type="date" id="fechaAcuerdo"></div>
-    <div class="checkbox-group">
-      <label class="checkbox-option"><input type="checkbox" id="aceptaTodos"> Todos los integrantes participaron en la elaboración de este contrato y están de acuerdo con su contenido.</label>
-    </div>
+  <div class="guide-card">
+    <div class="g-num">2 · Toma de decisiones</div>
+    <div class="g-title">¿Cómo decidimos cuando no estamos de acuerdo?</div>
+    <div class="g-desc">La plantilla ofrece cuatro métodos para elegir (consenso, mayoría simple, rol coordinador, o consultar al profesor guía). Elijan el que mejor represente cómo quieren trabajar — no tiene que ser el mismo para todo el proyecto.</div>
   </div>
 
-  <div class="section-card" id="generateTrigger">
-    <div class="section-title">Generar contrato</div>
-    <div class="section-subtitle">Compila todas las secciones en un documento final</div>
-    <button class="btn" onclick="generateContract()">Generar contrato de equipo →</button>
+  <div class="guide-card">
+    <div class="g-num">3 · Calidad y plazos</div>
+    <div class="g-title">Estándares de trabajo</div>
+    <ul class="g-questions">
+      <li>¿Con cuánta anticipación entregan su parte para que otros la revisen?</li>
+      <li>¿Quién revisa el trabajo de cada integrante antes de enviarlo?</li>
+      <li>¿Qué esperan si alguien no cumple con una tarea o un plazo?</li>
+    </ul>
+    <div class="g-tip">💡 Conversen esto antes de que ocurra un atraso — es mucho más fácil acordarlo en frío que después de un conflicto.</div>
   </div>
 
-  <div class="section-card" id="contractArea">
-    <div class="section-title">📄 Contrato de Equipo — Proyecto de Grado</div>
-    <div class="section-subtitle">Revisa el contenido antes de descargarlo, imprimirlo o enviarlo</div>
-    <pre id="contractText"></pre>
-    <div class="btn-row">
-      <button class="btn secondary" onclick="downloadContract()">⬇ Descargar (.txt)</button>
-      <button class="btn secondary" onclick="window.print()">🖨 Imprimir</button>
-    </div>
-    <div style="margin-top:20px; padding-top:18px; border-top:1px solid var(--line);">
-      <label style="margin-bottom:8px;">Enviar por correo</label>
-      <input type="email" id="contractEmail" placeholder="tu.correo@ejemplo.com">
-      <button class="btn" style="margin-top:0;" onclick="sendContractByEmail()">Enviarme el contrato →</button>
-      <div id="contractEmailStatus" style="font-size:0.78rem;color:#b0413e;margin-top:8px;"></div>
-    </div>
+  <div class="guide-card">
+    <div class="g-num">4 · Manejo de conflictos</div>
+    <div class="g-title">Si surge un desacuerdo, ¿qué pasos siguen?</div>
+    <div class="g-desc">Definan una escalada simple, de menor a mayor formalidad: primero conversarlo directamente entre los involucrados, luego llevarlo al equipo completo si no se resuelve, y por último pedir apoyo externo (normalmente el profesor guía) si sigue sin resolverse.</div>
   </div>
+
+  <div class="guide-card">
+    <div class="g-num">5 · Compromiso</div>
+    <div class="g-title">Firma del equipo</div>
+    <div class="g-desc">Pongan la fecha del acuerdo y que todos los integrantes firmen. Esto no es solo un trámite: es la señal de que todos participaron en construirlo y están de acuerdo con su contenido.</div>
+  </div>
+
+  <p class="footnote">Este contrato puede revisarse y ajustarse más adelante si el equipo lo acuerda — no es un documento rígido, es un punto de partida para trabajar mejor juntos.</p>
 
 </div>
-
-<script>
-let integrantes = [''];
-
-function addIntegrante() {
-  integrantes.push('');
-  renderIntegrantes();
-}
-function removeIntegrante(i) {
-  integrantes.splice(i, 1);
-  if (integrantes.length === 0) integrantes.push('');
-  renderIntegrantes();
-}
-function updateIntegrante(i, field, val) {
-  integrantes[i] = val;
-}
-
-function renderIntegrantes() {
-  const wrap = document.getElementById('integrantesList');
-  wrap.innerHTML = '';
-  integrantes.forEach((name, i) => {
-    const row = document.createElement('div');
-    row.className = 'integrante-row';
-    row.innerHTML = `
-      <input type="text" value="${name.replace(/"/g,'&quot;')}" placeholder="Nombre del integrante ${i+1}" oninput="updateIntegrante(${i}, 'name', this.value)">
-      <input type="text" placeholder="Rol Belbin / Liderazgo (opcional)" data-idx="${i}" class="rolField">
-      <button class="icon-btn" onclick="removeIntegrante(${i})" title="Quitar">✕</button>
-    `;
-    wrap.appendChild(row);
-  });
-}
-
-let integrantesRoles = {};
-document.addEventListener('input', (e) => {
-  if (e.target.classList && e.target.classList.contains('rolField')) {
-    integrantesRoles[e.target.dataset.idx] = e.target.value;
-  }
-});
-
-function generateContract() {
-  const nombre = document.getElementById('nombreProyecto').value || '(sin definir)';
-  const integrantesTxt = integrantes.map((n, i) => {
-    const rol = integrantesRoles[i] ? ` (${integrantesRoles[i]})` : '';
-    return n.trim() ? `${n}${rol}` : null;
-  }).filter(Boolean).join(', ') || '(sin definir)';
-
-  const canal = document.getElementById('canalComunicacion').value || '(sin definir)';
-  const frecuencia = document.getElementById('frecuenciaReuniones').value || '(sin definir)';
-  const tiempoResp = document.getElementById('tiempoRespuesta').value || '(sin definir)';
-  const protocoloAus = document.getElementById('protocoloAusencia').value || '(sin definir)';
-
-  const metodoRadio = document.querySelector('input[name="metodoDecision"]:checked');
-  const metodo = metodoRadio ? metodoRadio.value : '(sin definir)';
-
-  const anticipacion = document.getElementById('anticipacionEntrega').value || '(sin definir)';
-  const revision = document.getElementById('revisionCruzada').value || '(sin definir)';
-  const expectativa = document.getElementById('expectativaIncumplimiento').value || '(sin definir)';
-
-  const paso1 = document.getElementById('pasoConflicto1').value || '(sin definir)';
-  const paso2 = document.getElementById('pasoConflicto2').value || '(sin definir)';
-  const paso3 = document.getElementById('pasoConflicto3').value || '(sin definir)';
-
-  const fecha = document.getElementById('fechaAcuerdo').value || '(sin definir)';
-  const acepta = document.getElementById('aceptaTodos').checked ? 'Sí, todos los integrantes acuerdan este contrato.' : 'Pendiente de confirmación por todos los integrantes.';
-
-  let txt = `CONTRATO DE EQUIPO — PROYECTO DE GRADO\n`;
-  txt += `Magíster en Gestión de Personas y Efectividad Organizacional\n`;
-  txt += `${'='.repeat(50)}\n\n`;
-  txt += `Proyecto: ${nombre}\n`;
-  txt += `Integrantes: ${integrantesTxt}\n`;
-  txt += `Fecha del acuerdo: ${fecha}\n\n`;
-
-  txt += `1. COMUNICACIÓN\n`;
-  txt += `   Canal principal: ${canal}\n`;
-  txt += `   Frecuencia de reuniones: ${frecuencia}\n`;
-  txt += `   Tiempo máximo de respuesta: ${tiempoResp}\n`;
-  txt += `   Protocolo ante ausencias: ${protocoloAus}\n\n`;
-
-  txt += `2. TOMA DE DECISIONES\n`;
-  txt += `   Método acordado: ${metodo}\n\n`;
-
-  txt += `3. CALIDAD Y PLAZOS\n`;
-  txt += `   Anticipación de entrega para revisión: ${anticipacion}\n`;
-  txt += `   Revisión cruzada: ${revision}\n`;
-  txt += `   Ante un incumplimiento: ${expectativa}\n\n`;
-
-  txt += `4. MANEJO DE CONFLICTOS\n`;
-  txt += `   Paso 1: ${paso1}\n`;
-  txt += `   Paso 2: ${paso2}\n`;
-  txt += `   Paso 3: ${paso3}\n\n`;
-
-  txt += `5. COMPROMISO\n`;
-  txt += `   ${acepta}\n`;
-
-  document.getElementById('contractText').textContent = txt;
-  document.getElementById('contractArea').style.display = 'block';
-  document.getElementById('contractArea').scrollIntoView({ behavior: 'smooth' });
-}
-
-function downloadContract() {
-  const txt = document.getElementById('contractText').textContent;
-  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'contrato_de_equipo.txt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function sendContractByEmail() {
-  const emailInput = document.getElementById('contractEmail');
-  const statusEl = document.getElementById('contractEmailStatus');
-  const email = emailInput.value.trim();
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    statusEl.textContent = '⚠️ Ingresa un correo válido.';
-    emailInput.style.borderColor = '#b0413e';
-    return;
-  }
-  emailInput.style.borderColor = 'var(--line)';
-  statusEl.style.color = '#5c6b70';
-  statusEl.textContent = 'Abriendo tu programa de correo...';
-  const txt = document.getElementById('contractText').textContent;
-  const subject = 'Contrato de Equipo - Proyecto de Grado';
-  const mailtoLink = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt)}`;
-  window.location.href = mailtoLink;
-}
-
-renderIntegrantes();
-</script>
 <script src="sidebar.js"></script>
 </body>
 </html>
