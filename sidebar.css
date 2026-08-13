@@ -1,0 +1,55 @@
+/* Barra lateral compartida — usada por todas las páginas del sitio */
+
+body {
+  padding-left: 64px;
+}
+
+.site-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 64px;
+  background: var(--navy-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 22px;
+  gap: 4px;
+  z-index: 100;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  overflow-y: auto;
+}
+
+.site-sidebar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #cfe0dd;
+  padding: 10px 4px;
+  border-radius: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.site-sidebar a:hover,
+.site-sidebar a.active {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+.site-sidebar svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 600px) {
+  body { padding-left: 48px; }
+  .site-sidebar { width: 48px; }
+  .site-sidebar a span { display: none; }
+}
