@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Constructor de Objetivos — Proyecto de Grado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #101b22;
+    --navy: #123a4d;
+    --navy-deep: #0c2733;
+    --paper: #f4f6f5;
+    --paper-raised: #ffffff;
+    --teal: #1c7c74;
+    --teal-deep: #145f59;
+    --gold: #b8862b;
+    --gold-deep: #93691f;
+    --line: #d7dfe1;
+    --muted: #5c6b70;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; line-height: 1.5; }
+
+  .page-head { max-width: 820px; margin: 0 auto; padding: 56px 6vw 8px; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--teal-deep); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--teal-deep); display: inline-block; }
+  .page-head h1 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(1.8rem, 3.8vw, 2.4rem); color: var(--navy-deep); letter-spacing: -0.01em;
+  }
+  .page-head .lede { margin-top: 12px; font-size: 0.95rem; color: var(--muted); max-width: 62ch; }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 24px 6vw 100px; }
+
+  .intro-card { background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--teal); border-radius: 4px; padding: 26px; margin-bottom: 28px; }
+  .intro-card h2 { font-family: 'Fraunces', serif; font-weight: 600; color: var(--navy-deep); margin-bottom: 10px; font-size: 1.1rem; }
+  .intro-card p { font-size: 0.88rem; line-height: 1.65; color: var(--muted); }
+  .intro-card strong { color: var(--navy-deep); }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--teal-deep); margin: 34px 0 6px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .section-label .num { color: var(--muted); }
+  .section-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 16px; }
+
+  .card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 4px; padding: 22px 24px; margin-bottom: 16px; }
+
+  label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], textarea, select {
+    width: 100%; font-family: 'Inter', sans-serif; font-size: 0.92rem; color: var(--ink);
+    background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 10px 12px;
+    margin-bottom: 16px; resize: vertical;
+  }
+  input[type=text]:focus, textarea:focus, select:focus { outline: none; border-color: var(--teal); background: #fff; }
+  textarea { min-height: 60px; font-family: 'Inter', sans-serif; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
+  .hint { font-size: 0.78rem; color: var(--muted); margin: -10px 0 16px; }
+
+  .verb-bank { display: flex; flex-wrap: wrap; gap: 6px; margin: -8px 0 16px; }
+  .verb-chip {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--teal-deep);
+    background: #f2f8f7; border: 1px solid #d3e7e4; border-radius: 3px; padding: 4px 9px;
+    cursor: pointer; transition: background 0.15s ease;
+  }
+  .verb-chip:hover { background: #dcefec; }
+
+  .preview-box {
+    background: #f9fbfa; border: 1px dashed var(--line); border-radius: 3px; padding: 16px 18px;
+    font-family: 'Fraunces', serif; font-size: 0.98rem; color: var(--navy-deep); line-height: 1.6; min-height: 24px;
+  }
+  .preview-box .placeholder { font-family: 'Inter', sans-serif; color: var(--muted); font-size: 0.85rem; font-style: italic; }
+
+  .specific-item { border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 3px; padding: 16px 18px; margin-bottom: 12px; position: relative; }
+  .specific-item .item-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--gold-deep); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .remove-btn { background: none; border: none; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; cursor: pointer; text-decoration: underline; }
+  .remove-btn:hover { color: #b3413a; }
+
+  .add-btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--teal-deep);
+    background: none; border: 1px dashed var(--teal); border-radius: 3px; padding: 10px 16px;
+    cursor: pointer; width: 100%; transition: background 0.15s ease;
+  }
+  .add-btn:hover { background: #f2f8f7; }
+
+  .summary-card { background: var(--navy-deep); border-radius: 4px; padding: 26px 28px; margin-top: 34px; color: #e8eeed; }
+  .summary-card h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.1rem; margin-bottom: 14px; color: #fff; }
+  .summary-block { font-family: 'Fraunces', serif; font-size: 0.95rem; line-height: 1.7; }
+  .summary-block .label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7fb8b0; display: block; margin: 14px 0 4px; }
+  .summary-block .label:first-child { margin-top: 0; }
+  .summary-block ol { margin-left: 20px; margin-top: 4px; }
+  .summary-block li { margin-bottom: 6px; }
+  .empty-note { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #93a6a3; font-style: italic; }
+
+  .actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.03em;
+    padding: 11px 18px; border-radius: 3px; cursor: pointer; border: none; text-decoration: none; display: inline-block;
+  }
+  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-ghost { background: transparent; color: #cfe0dd; border: 1px solid #33555a; }
+  .btn-ghost:hover { border-color: #7fb8b0; color: #fff; }
+
+  .save-note { font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
+
+  @media print {
+    .site-sidebar, .page-head .eyebrow, .actions, .card:not(.print-only), .intro-card, .verb-bank, .add-btn, .remove-btn { display: none !important; }
+    body { padding-left: 0; }
+    .summary-card { background: #fff; color: #000; border: 1px solid #000; }
+    .summary-card h2, .summary-block .label { color: #000; }
+  }
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="sidebar-placeholder"></div>
+
+<div class="page-head">
+  <div class="eyebrow">FORMULACIÓN DEL PROYECTO · ÍTEM 3 DE LA RÚBRICA</div>
+  <h1>Constructor de Objetivos</h1>
+  <p class="lede">Redacta tu objetivo general y tus objetivos específicos con acotamiento espacial y temporal claro — el criterio que la rúbrica evalúa explícitamente en el ítem 3.</p>
+</div>
+
+<div class="container">
+
+  <div class="intro-card">
+    <h2>Qué exige este ítem</h2>
+    <p>La rúbrica del programa evalúa que el equipo <strong>acote espacial y temporalmente el objetivo general</strong> y lo <strong>desglose en objetivos específicos</strong>, estableciendo claramente su alcance. Un objetivo sin acotamiento — sin decir <em>dónde</em> y <em>cuándo</em> se va a intervenir — es la observación más común en esta etapa. Esta herramienta te obliga a completar esos tres elementos antes de darte la redacción final.</p>
+  </div>
+
+  <div class="section-label"><span class="num">01</span> Contexto del proyecto</div>
+  <div class="section-sub">Esta información no aparece en la redacción final, pero ayuda a mantener consistencia en los pasos siguientes.</div>
+  <div class="card">
+    <label for="ctx-org">Organización o empresa</label>
+    <input type="text" id="ctx-org" placeholder="Ej: Constructora Harcha">
+    <label for="ctx-problema">Problema u oportunidad detectada</label>
+    <textarea id="ctx-problema" placeholder="Ej: Alta rotación de personal en obra durante el primer año de contrato"></textarea>
+  </div>
+
+  <div class="section-label"><span class="num">02</span> Objetivo general</div>
+  <div class="section-sub">Un verbo en infinitivo + qué se hace + dónde (acotamiento espacial) + cuándo (acotamiento temporal).</div>
+  <div class="card">
+    <label>Banco de verbos sugeridos — clic para insertar</label>
+    <div class="verb-bank" id="verb-bank-general">
+      <span class="verb-chip">Diagnosticar</span><span class="verb-chip">Analizar</span><span class="verb-chip">Diseñar</span>
+      <span class="verb-chip">Proponer</span><span class="verb-chip">Elaborar</span><span class="verb-chip">Desarrollar</span>
+      <span class="verb-chip">Evaluar</span><span class="verb-chip">Implementar</span>
+    </div>
+    <label for="og-verbo">Verbo + qué se hace (complemento)</label>
+    <input type="text" id="og-verbo" placeholder="Ej: Diseñar una propuesta de retención de talento">
+    <div class="field-row">
+      <div>
+        <label for="og-espacial">Acotamiento espacial (dónde)</label>
+        <input type="text" id="og-espacial" placeholder="Ej: para el área de obra de Constructora Harcha">
+      </div>
+      <div>
+        <label for="og-temporal">Acotamiento temporal (cuándo)</label>
+        <input type="text" id="og-temporal" placeholder="Ej: durante el segundo semestre de 2026">
+      </div>
+    </div>
+    <label>Vista previa</label>
+    <div class="preview-box" id="og-preview"><span class="placeholder">Completa los campos para ver el objetivo general redactado.</span></div>
+  </div>
+
+  <div class="section-label"><span class="num">03</span> Objetivos específicos</div>
+  <div class="section-sub">Cada uno debe aportar directamente al objetivo general. En conjunto, deben cubrir todo su alcance — ni de más, ni de menos.</div>
+  <div class="card">
+    <label>Banco de verbos sugeridos para objetivos específicos</label>
+    <div class="verb-bank">
+      <span class="verb-chip" data-target="specific">Identificar</span><span class="verb-chip" data-target="specific">Diagnosticar</span>
+      <span class="verb-chip" data-target="specific">Determinar</span><span class="verb-chip" data-target="specific">Analizar</span>
+      <span class="verb-chip" data-target="specific">Diseñar</span><span class="verb-chip" data-target="specific">Elaborar</span>
+      <span class="verb-chip" data-target="specific">Validar</span><span class="verb-chip" data-target="specific">Evaluar</span>
+    </div>
+    <div id="specific-list"></div>
+    <button class="add-btn" id="add-specific" type="button">+ Agregar objetivo específico</button>
+  </div>
+
+  <div class="summary-card">
+    <h2>Resumen para tu informe</h2>
+    <div class="summary-block" id="final-summary">
+      <span class="empty-note">Aquí aparecerá el objetivo general y la lista numerada de objetivos específicos, listos para copiar al Capítulo 1.5 de tu informe.</span>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btn-copiar" type="button">Copiar texto</button>
+      <button class="btn btn-ghost" id="btn-descargar" type="button">Descargar .txt</button>
+      <a class="btn btn-ghost" id="btn-email" href="#">Enviar por correo</a>
+    </div>
+    <p class="save-note" style="color:#93a6a3;">Tu progreso se guarda automáticamente en este navegador.</p>
+  </div>
+
+</div>
+<script src="sidebar.js"></script>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const STORAGE_KEY = 'mgpe_constructor_objetivos_v1';
+
+  let state = {
+    org: '', problema: '',
+    ogVerbo: '', ogEspacial: '', ogTemporal: '',
+    specifics: [{ verbo: '' }]
+  };
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) state = Object.assign(state, JSON.parse(raw));
+    } catch (e) { /* almacenamiento no disponible, se continúa sin persistencia */ }
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function renderSpecifics() {
+    const list = $('specific-list');
+    list.innerHTML = '';
+    state.specifics.forEach((sp, i) => {
+      const div = document.createElement('div');
+      div.className = 'specific-item';
+      div.innerHTML = `
+        <div class="item-num">OBJETIVO ESPECÍFICO ${i + 1}
+          ${state.specifics.length > 1 ? `<button class="remove-btn" data-i="${i}" type="button">quitar</button>` : ''}
+        </div>
+        <input type="text" data-i="${i}" class="specific-input" placeholder="Ej: Identificar las principales causas de rotación en obra" value="${escapeHtml(sp.verbo)}">
+      `;
+      list.appendChild(div);
+    });
+    list.querySelectorAll('.specific-input').forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        state.specifics[+e.target.dataset.i].verbo = e.target.value;
+        renderPreview(); save();
+      });
+    });
+    list.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        state.specifics.splice(+e.target.dataset.i, 1);
+        renderSpecifics(); renderPreview(); save();
+      });
+    });
+  }
+
+  function escapeHtml(s) {
+    return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function buildObjetivoGeneral() {
+    const parts = [state.ogVerbo.trim(), state.ogEspacial.trim(), state.ogTemporal.trim()].filter(Boolean);
+    if (!state.ogVerbo.trim()) return '';
+    let txt = state.ogVerbo.trim();
+    if (state.ogEspacial.trim()) txt += ', ' + state.ogEspacial.trim();
+    if (state.ogTemporal.trim()) txt += ', ' + state.ogTemporal.trim();
+    return txt.endsWith('.') ? txt : txt + '.';
+  }
+
+  function renderPreview() {
+    const og = buildObjetivoGeneral();
+    $('og-preview').innerHTML = og
+      ? og
+      : '<span class="placeholder">Completa los campos para ver el objetivo general redactado.</span>';
+
+    const validSpecifics = state.specifics.map(s => s.verbo.trim()).filter(Boolean);
+    const summary = $('final-summary');
+    if (!og && validSpecifics.length === 0) {
+      summary.innerHTML = '<span class="empty-note">Aquí aparecerá el objetivo general y la lista numerada de objetivos específicos, listos para copiar al Capítulo 1.5 de tu informe.</span>';
+      return;
+    }
+    let html = '';
+    if (og) {
+      html += `<span class="label">Objetivo General</span>${escapeHtml(og)}`;
+    }
+    if (validSpecifics.length) {
+      html += `<span class="label">Objetivos Específicos</span><ol>${validSpecifics.map(s => `<li>${escapeHtml(s)}${s.endsWith('.') ? '' : '.'}</li>`).join('')}</ol>`;
+    }
+    summary.innerHTML = html;
+  }
+
+  function plainTextSummary() {
+    const og = buildObjetivoGeneral();
+    const validSpecifics = state.specifics.map(s => s.verbo.trim()).filter(Boolean);
+    let out = 'OBJETIVOS DEL PROYECTO DE GRADO\n';
+    if (state.org) out += `Organización: ${state.org}\n`;
+    out += '\n';
+    if (og) out += `Objetivo General:\n${og}\n\n`;
+    if (validSpecifics.length) {
+      out += 'Objetivos Específicos:\n';
+      validSpecifics.forEach((s, i) => { out += `${i + 1}. ${s}${s.endsWith('.') ? '' : '.'}\n`; });
+    }
+    return out;
+  }
+
+  // Bind context + general fields
+  $('ctx-org').addEventListener('input', e => { state.org = e.target.value; save(); });
+  $('ctx-problema').addEventListener('input', e => { state.problema = e.target.value; save(); });
+  $('og-verbo').addEventListener('input', e => { state.ogVerbo = e.target.value; renderPreview(); save(); });
+  $('og-espacial').addEventListener('input', e => { state.ogEspacial = e.target.value; renderPreview(); save(); });
+  $('og-temporal').addEventListener('input', e => { state.ogTemporal = e.target.value; renderPreview(); save(); });
+
+  // Verb chips
+  document.getElementById('verb-bank-general').querySelectorAll('.verb-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const input = $('og-verbo');
+      input.value = (input.value.trim() ? input.value.trim() + ' ' : '') + chip.textContent.toLowerCase() + ' ';
+      input.focus();
+      state.ogVerbo = input.value; renderPreview(); save();
+    });
+  });
+  document.querySelectorAll('.verb-chip[data-target="specific"]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const lastIdx = state.specifics.length - 1;
+      const current = state.specifics[lastIdx].verbo || '';
+      state.specifics[lastIdx].verbo = (current.trim() ? current.trim() + ' ' : '') + chip.textContent.toLowerCase() + ' ';
+      renderSpecifics(); renderPreview(); save();
+      const inputs = document.querySelectorAll('.specific-input');
+      inputs[inputs.length - 1].focus();
+    });
+  });
+
+  $('add-specific').addEventListener('click', () => {
+    state.specifics.push({ verbo: '' });
+    renderSpecifics(); renderPreview(); save();
+  });
+
+  $('btn-copiar').addEventListener('click', () => {
+    navigator.clipboard.writeText(plainTextSummary()).then(() => {
+      const btn = $('btn-copiar');
+      const original = btn.textContent;
+      btn.textContent = 'Copiado ✓';
+      setTimeout(() => { btn.textContent = original; }, 1600);
+    });
+  });
+
+  $('btn-descargar').addEventListener('click', () => {
+    const blob = new Blob([plainTextSummary()], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'objetivos_proyecto_grado.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  $('btn-email').addEventListener('click', (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent('Objetivos del Proyecto de Grado' + (state.org ? ' — ' + state.org : ''));
+    const body = encodeURIComponent(plainTextSummary());
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  });
+
+  load();
+  $('ctx-org').value = state.org;
+  $('ctx-problema').value = state.problema;
+  $('og-verbo').value = state.ogVerbo;
+  $('og-espacial').value = state.ogEspacial;
+  $('og-temporal').value = state.ogTemporal;
+  renderSpecifics();
+  renderPreview();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Avance Interactiva — Proyecto de Grado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #101b22;
+    --navy: #123a4d;
+    --navy-deep: #0c2733;
+    --paper: #f4f6f5;
+    --paper-raised: #ffffff;
+    --teal: #1c7c74;
+    --teal-deep: #145f59;
+    --gold: #b8862b;
+    --gold-deep: #93691f;
+    --line: #d7dfe1;
+    --muted: #5c6b70;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; line-height: 1.5; }
+
+  .page-head { max-width: 920px; margin: 0 auto; padding: 56px 6vw 8px; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--teal-deep); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--teal-deep); display: inline-block; }
+  .page-head h1 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(1.8rem, 3.8vw, 2.4rem); color: var(--navy-deep); letter-spacing: -0.01em;
+  }
+  .page-head .lede { margin-top: 12px; font-size: 0.95rem; color: var(--muted); max-width: 66ch; }
+
+  .container { max-width: 920px; margin: 0 auto; padding: 24px 6vw 100px; }
+
+  .card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 4px; padding: 24px 26px; margin-bottom: 20px; }
+  .card.head-card { border-top: 3px solid var(--teal); }
+
+  label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], input[type=date], input[type=number], textarea, select {
+    width: 100%; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--ink);
+    background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 9px 11px;
+    margin-bottom: 14px;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--teal); background: #fff; }
+  textarea { min-height: 56px; resize: vertical; font-family: 'Inter', sans-serif; }
+
+  .head-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+  .head-grid .full { grid-column: 1 / -1; }
+  @media (max-width: 640px) { .head-grid { grid-template-columns: 1fr; } }
+
+  .students-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 4px; }
+  @media (max-width: 640px) { .students-row { grid-template-columns: 1fr; } }
+
+  /* Tabs */
+  .month-tabs { display: flex; gap: 4px; overflow-x: auto; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .month-tab {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.03em; color: var(--muted);
+    background: none; border: none; padding: 12px 14px 10px; cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent; text-align: left;
+  }
+  .month-tab .tab-month { display: block; font-size: 0.62rem; opacity: 0.7; }
+  .month-tab .tab-phase { display: block; font-family: 'Fraunces', serif; font-size: 0.82rem; color: var(--navy-deep); margin-top: 2px; }
+  .month-tab.active { border-bottom-color: var(--teal); }
+  .month-tab.active .tab-phase { color: var(--teal-deep); }
+
+  .month-panel { display: none; }
+  .month-panel.active { display: block; }
+
+  .subsection-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--teal-deep); margin: 20px 0 10px;
+  }
+  .subsection-label:first-child { margin-top: 0; }
+
+  .meeting-row {
+    display: grid; grid-template-columns: 130px repeat(3, 1fr) 34px; gap: 10px; align-items: center; margin-bottom: 8px;
+  }
+  .meeting-row .att-select { margin-bottom: 0; padding: 8px 8px; font-size: 0.78rem; }
+  .meeting-row input[type=date] { margin-bottom: 0; }
+  .att-head { display: grid; grid-template-columns: 130px repeat(3, 1fr) 34px; gap: 10px; margin-bottom: 8px; }
+  .att-head span { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; text-transform: uppercase; color: var(--muted); }
+  .remove-row { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; }
+  .remove-row:hover { color: #b3413a; }
+  @media (max-width: 700px) {
+    .meeting-row, .att-head { grid-template-columns: 100px repeat(3, 1fr) 24px; }
+  }
+
+  .add-btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--teal-deep);
+    background: none; border: 1px dashed var(--teal); border-radius: 3px; padding: 8px 14px;
+    cursor: pointer; margin-bottom: 4px; transition: background 0.15s ease;
+  }
+  .add-btn:hover { background: #f2f8f7; }
+
+  .eval-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 640px) { .eval-grid { grid-template-columns: 1fr; } }
+  .eval-grid label span { color: var(--navy-deep); font-weight: 600; }
+
+  .avg-note { font-size: 0.78rem; color: var(--muted); background: #f9fbfa; border: 1px dashed var(--line); border-radius: 3px; padding: 10px 12px; margin-top: 4px; }
+
+  .suggestion { font-size: 0.78rem; color: var(--muted); font-style: italic; margin: -10px 0 12px; }
+
+  .summary-card { background: var(--navy-deep); border-radius: 4px; padding: 26px 28px; margin-top: 30px; color: #e8eeed; }
+  .summary-card h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.1rem; margin-bottom: 6px; color: #fff; }
+  .summary-card .sub { font-size: 0.8rem; color: #93a6a3; margin-bottom: 16px; }
+  .avg-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 6px; }
+  .avg-table th, .avg-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #24444b; }
+  .avg-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; text-transform: uppercase; color: #7fb8b0; font-weight: 500; }
+  .avg-table td.num { font-family: 'IBM Plex Mono', monospace; }
+  .weight-note { font-size: 0.75rem; color: #93a6a3; margin-top: 10px; }
+
+  .actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.03em;
+    padding: 11px 18px; border-radius: 3px; cursor: pointer; border: none; text-decoration: none; display: inline-block;
+  }
+  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary:hover { background: var(--teal-deep); }
+  .btn-ghost { background: transparent; color: #cfe0dd; border: 1px solid #33555a; }
+  .btn-ghost:hover { border-color: #7fb8b0; color: #fff; }
+  .save-note { font-size: 0.75rem; color: #93a6a3; margin-top: 12px; }
+
+  @media print {
+    .site-sidebar, .page-head .eyebrow, .actions, .month-tabs, .add-btn, .remove-row { display: none !important; }
+    body { padding-left: 0; }
+    .month-panel { display: block !important; page-break-inside: avoid; margin-bottom: 24px; }
+    .summary-card { background: #fff; color: #000; border: 1px solid #000; }
+    .summary-card h2, .summary-card .sub, .weight-note, .avg-table th { color: #000 !important; }
+  }
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="sidebar-placeholder"></div>
+
+<div class="page-head">
+  <div class="eyebrow">SEGUIMIENTO MENSUAL · FICHA TÉCNICA DE AVANCE</div>
+  <h1>Ficha de Avance Interactiva</h1>
+  <p class="lede">La misma estructura que la Ficha Técnica de Avance oficial — cinco meses, asistencia, objetivos de sesión y evaluación del profesor guía — en un formato que pueden completar juntos y exportar cuando lo necesiten.</p>
+</div>
+
+<div class="container">
+
+  <div class="card head-card">
+    <div class="subsection-label">Datos generales</div>
+    <div class="head-grid">
+      <div>
+        <label for="f-profesor">Profesor guía</label>
+        <input type="text" id="f-profesor">
+      </div>
+      <div>
+        <label for="f-proyecto">Nombre del proyecto</label>
+        <input type="text" id="f-proyecto">
+      </div>
+      <div class="full">
+        <label for="f-alcance">Alcance del proyecto</label>
+        <textarea id="f-alcance"></textarea>
+      </div>
+      <div>
+        <label for="f-inicio">Fecha inicio</label>
+        <input type="date" id="f-inicio">
+      </div>
+      <div>
+        <label for="f-termino">Fecha término</label>
+        <input type="date" id="f-termino">
+      </div>
+    </div>
+    <div class="subsection-label">Integrantes del equipo</div>
+    <div class="students-row">
+      <div><label for="f-est1">Estudiante 1</label><input type="text" id="f-est1" style="margin-bottom:0;"></div>
+      <div><label for="f-est2">Estudiante 2</label><input type="text" id="f-est2" style="margin-bottom:0;"></div>
+      <div><label for="f-est3">Estudiante 3</label><input type="text" id="f-est3" style="margin-bottom:0;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="month-tabs" id="month-tabs"></div>
+    <div id="month-panels"></div>
+  </div>
+
+  <div class="summary-card">
+    <h2>Resumen de evaluación grupal</h2>
+    <div class="sub">Promedio de evaluación (1.0–7.0) por estudiante a través de los meses registrados</div>
+    <table class="avg-table" id="avg-table"></table>
+    <p class="weight-note">Este promedio corresponde al trabajo grupal y no es igual a la nota del trabajo de grado: equivale al 20% de la nota final.</p>
+    <div class="actions">
+      <button class="btn btn-primary" id="btn-descargar" type="button">Descargar resumen (.txt)</button>
+      <a class="btn btn-ghost" id="btn-email" href="#">Enviar por correo</a>
+      <button class="btn btn-ghost" id="btn-imprimir" type="button">Imprimir / Guardar como PDF</button>
+    </div>
+    <p class="save-note">Tu progreso se guarda automáticamente en este navegador.</p>
+  </div>
+
+</div>
+<script src="sidebar.js"></script>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const STORAGE_KEY = 'mgpe_ficha_avance_v1';
+
+  const MONTHS = [
+    { label: 'Mes 1', phase: 'Diagnóstico', suggestion: 'Definición del alcance del proyecto de grado y objetivos generales. Completar GANTT.' },
+    { label: 'Mes 2', phase: 'Desarrollo', suggestion: 'Análisis estratégico realizado y análisis de la información relevante.' },
+    { label: 'Mes 3', phase: 'Desarrollo', suggestion: 'Continuación del trabajo de campo y análisis de la información.' },
+    { label: 'Mes 4', phase: 'Resultados y Conclusiones', suggestion: 'Evaluación del proyecto, indicando el beneficio de su desarrollo.' },
+    { label: 'Mes 5', phase: 'Preparación de Informes y Presentación', suggestion: 'Revisión del documento escrito, revisión de la PPT final y plazo máximo para presentación del examen de grado.' }
+  ];
+
+  let state = {
+    profesor: '', proyecto: '', alcance: '', inicio: '', termino: '',
+    est: ['', '', ''],
+    months: MONTHS.map(() => ({ meetings: [{ date: '', att: ['', '', ''] }], objetivos: '', evals: ['', '', ''], comentarios: '' })),
+    activeMonth: 0
+  };
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        state = Object.assign(state, parsed);
+      }
+    } catch (e) { /* sin almacenamiento disponible */ }
+  }
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function studentName(i) {
+    return (state.est[i] && state.est[i].trim()) || `Estudiante ${i + 1}`;
+  }
+
+  function renderTabs() {
+    const tabs = $('month-tabs');
+    tabs.innerHTML = '';
+    MONTHS.forEach((m, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'month-tab' + (state.activeMonth === i ? ' active' : '');
+      btn.type = 'button';
+      btn.innerHTML = `<span class="tab-month">${m.label}</span><span class="tab-phase">${m.phase}</span>`;
+      btn.addEventListener('click', () => { state.activeMonth = i; save(); renderTabs(); renderPanels(); });
+      tabs.appendChild(btn);
+    });
+  }
+
+  function renderMeetingRows(mi) {
+    const month = state.months[mi];
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="att-head"><span>Fecha</span><span>${studentName(0)}</span><span>${studentName(1)}</span><span>${studentName(2)}</span><span></span></div>`;
+    month.meetings.forEach((meeting, ri) => {
+      const row = document.createElement('div');
+      row.className = 'meeting-row';
+      const dateInput = document.createElement('input');
+      dateInput.type = 'date'; dateInput.value = meeting.date; dateInput.style.marginBottom = '0';
+      dateInput.addEventListener('input', e => { meeting.date = e.target.value; save(); });
+      row.appendChild(dateInput);
+
+      for (let s = 0; s < 3; s++) {
+        const sel = document.createElement('select');
+        sel.className = 'att-select';
+        sel.innerHTML = `<option value="">—</option><option value="A"${meeting.att[s]==='A'?' selected':''}>Asiste</option><option value="N"${meeting.att[s]==='N'?' selected':''}>No asiste</option>`;
+        sel.addEventListener('change', e => { meeting.att[s] = e.target.value; save(); });
+        row.appendChild(sel);
+      }
+
+      const rm = document.createElement('button');
+      rm.className = 'remove-row'; rm.type = 'button'; rm.textContent = '✕';
+      rm.title = 'Quitar reunión';
+      rm.addEventListener('click', () => {
+        if (month.meetings.length > 1) { month.meetings.splice(ri, 1); save(); renderPanels(); }
+      });
+      row.appendChild(rm);
+      wrap.appendChild(row);
+    });
+    return wrap;
+  }
+
+  function renderPanels() {
+    const container = $('month-panels');
+    container.innerHTML = '';
+    MONTHS.forEach((m, mi) => {
+      const month = state.months[mi];
+      const panel = document.createElement('div');
+      panel.className = 'month-panel' + (state.activeMonth === mi ? ' active' : '');
+
+      panel.innerHTML = `<div class="subsection-label">Reuniones y asistencia — ${m.label} · ${m.phase}</div>`;
+      panel.appendChild(renderMeetingRows(mi));
+
+      const addMeetingBtn = document.createElement('button');
+      addMeetingBtn.className = 'add-btn'; addMeetingBtn.type = 'button';
+      addMeetingBtn.textContent = '+ Agregar reunión';
+      addMeetingBtn.addEventListener('click', () => { month.meetings.push({ date: '', att: ['', '', ''] }); save(); renderPanels(); });
+      panel.appendChild(addMeetingBtn);
+
+      const objLabel = document.createElement('div');
+      objLabel.className = 'subsection-label'; objLabel.textContent = 'Objetivos de la sesión';
+      panel.appendChild(objLabel);
+
+      const sugg = document.createElement('div');
+      sugg.className = 'suggestion';
+      sugg.textContent = 'Sugerido para esta fase: “' + m.suggestion + '”';
+      panel.appendChild(sugg);
+
+      const objInput = document.createElement('textarea');
+      objInput.value = month.objetivos;
+      objInput.placeholder = m.suggestion;
+      objInput.addEventListener('input', e => { month.objetivos = e.target.value; save(); });
+      panel.appendChild(objInput);
+
+      const evalLabel = document.createElement('div');
+      evalLabel.className = 'subsection-label'; evalLabel.textContent = 'Evaluación del profesor guía (1.0 – 7.0)';
+      panel.appendChild(evalLabel);
+
+      const evalGrid = document.createElement('div');
+      evalGrid.className = 'eval-grid';
+      for (let s = 0; s < 3; s++) {
+        const field = document.createElement('div');
+        const lab = document.createElement('label');
+        lab.innerHTML = `<span>${studentName(s)}</span>`;
+        const inp = document.createElement('input');
+        inp.type = 'number'; inp.min = '1'; inp.max = '7'; inp.step = '0.1';
+        inp.value = month.evals[s];
+        inp.addEventListener('input', e => { month.evals[s] = e.target.value; save(); renderSummary(); });
+        field.appendChild(lab); field.appendChild(inp);
+        evalGrid.appendChild(field);
+      }
+      panel.appendChild(evalGrid);
+
+      const note = document.createElement('div');
+      note.className = 'avg-note';
+      note.textContent = '1.0 = No aporta / No asiste  ·  7.0 = Aporte significativo';
+      panel.appendChild(note);
+
+      const comLabel = document.createElement('div');
+      comLabel.className = 'subsection-label'; comLabel.textContent = 'Comentarios generales sobre el avance del grupo';
+      panel.appendChild(comLabel);
+
+      const comInput = document.createElement('textarea');
+      comInput.value = month.comentarios;
+      comInput.addEventListener('input', e => { month.comentarios = e.target.value; save(); });
+      panel.appendChild(comInput);
+
+      container.appendChild(panel);
+    });
+  }
+
+  function renderSummary() {
+    const table = $('avg-table');
+    let rows = '<tr><th>Estudiante</th>' + MONTHS.map(m => `<th>${m.label}</th>`).join('') + '<th>Promedio</th></tr>';
+    for (let s = 0; s < 3; s++) {
+      const vals = state.months.map(m => parseFloat(m.evals[s])).filter(v => !isNaN(v));
+      const avg = vals.length ? (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1) : '—';
+      rows += `<tr><td>${studentName(s)}</td>` + state.months.map(m => `<td class="num">${m.evals[s] || '—'}</td>`).join('') + `<td class="num">${avg}</td></tr>`;
+    }
+    table.innerHTML = rows;
+  }
+
+  function plainTextSummary() {
+    let out = 'FICHA DE AVANCE — PROYECTO DE GRADO\n';
+    out += `Proyecto: ${state.proyecto || '—'}\n`;
+    out += `Profesor guía: ${state.profesor || '—'}\n`;
+    out += `Alcance: ${state.alcance || '—'}\n`;
+    out += `Periodo: ${state.inicio || '—'} a ${state.termino || '—'}\n`;
+    out += `Equipo: ${[0,1,2].map(studentName).join(', ')}\n\n`;
+    MONTHS.forEach((m, mi) => {
+      const month = state.months[mi];
+      out += `--- ${m.label} · ${m.phase} ---\n`;
+      out += 'Reuniones:\n';
+      month.meetings.forEach(meeting => {
+        if (meeting.date || meeting.att.some(Boolean)) {
+          out += `  ${meeting.date || 'sin fecha'}: ` + [0,1,2].map(s => `${studentName(s)}=${meeting.att[s] || '—'}`).join(', ') + '\n';
+        }
+      });
+      out += `Objetivos de la sesión: ${month.objetivos || '(sin registrar)'}\n`;
+      out += 'Evaluación: ' + [0,1,2].map(s => `${studentName(s)}=${month.evals[s] || '—'}`).join(', ') + '\n';
+      out += `Comentarios: ${month.comentarios || '(sin comentarios)'}\n\n`;
+    });
+    out += 'Nota: el promedio de evaluación grupal equivale al 20% de la nota final del trabajo de grado.\n';
+    return out;
+  }
+
+  // Header field bindings
+  const headerFields = [
+    ['f-profesor', 'profesor'], ['f-proyecto', 'proyecto'], ['f-alcance', 'alcance'],
+    ['f-inicio', 'inicio'], ['f-termino', 'termino']
+  ];
+  headerFields.forEach(([id, key]) => {
+    $(id).addEventListener('input', e => { state[key] = e.target.value; save(); });
+  });
+  ['f-est1', 'f-est2', 'f-est3'].forEach((id, i) => {
+    $(id).addEventListener('input', e => { state.est[i] = e.target.value; save(); renderPanels(); renderSummary(); });
+  });
+
+  $('btn-descargar').addEventListener('click', () => {
+    const blob = new Blob([plainTextSummary()], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ficha_avance_proyecto_grado.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  $('btn-email').addEventListener('click', (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent('Ficha de Avance' + (state.proyecto ? ' — ' + state.proyecto : ''));
+    const body = encodeURIComponent(plainTextSummary());
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  });
+
+  $('btn-imprimir').addEventListener('click', () => window.print());
+
+  load();
+  $('f-profesor').value = state.profesor;
+  $('f-proyecto').value = state.proyecto;
+  $('f-alcance').value = state.alcance;
+  $('f-inicio').value = state.inicio;
+  $('f-termino').value = state.termino;
+  $('f-est1').value = state.est[0]; $('f-est2').value = state.est[1]; $('f-est3').value = state.est[2];
+  renderTabs();
+  renderPanels();
+  renderSummary();
+})();
+</script>
+</body>
+</html>
