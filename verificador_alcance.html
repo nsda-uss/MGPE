@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificador de Alcance · Proyecto de Grado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #101b22; --navy: #123a4d; --navy-deep: #0c2733;
+    --paper: #f4f6f5; --paper-raised: #ffffff;
+    --teal: #1c7c74; --teal-deep: #145f59; --teal-soft: #f2f8f7;
+    --gold: #b8862b; --gold-deep: #93691f;
+    --line: #d7dfe1; --muted: #5c6b70;
+    --va-red: #b4453c; --va-red-soft: #fcefed;
+    --va-amber: #b4823c; --va-amber-soft: #fbf3e3;
+    --va-green: #2e7d5b; --va-green-soft: #effaf3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; line-height: 1.5; }
+
+  .page-head { max-width: 900px; margin: 0 auto; padding: 56px 6vw 8px; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal-deep); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--teal-deep); display: inline-block; }
+  .page-head h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(1.7rem, 3.6vw, 2.2rem); color: var(--navy-deep); letter-spacing: -0.01em; }
+  .page-head .lede { margin-top: 10px; font-size: 0.92rem; color: var(--muted); max-width: 66ch; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 6vw 80px; }
+
+  .intro-card { background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--teal); border-radius: 4px; padding: 26px 24px; margin-bottom: 22px; }
+  .intro-card p { font-size: 0.9rem; line-height: 1.65; color: var(--muted); margin-bottom: 10px; }
+  .intro-card p:last-child { margin-bottom: 0; }
+  .intro-card strong { color: var(--navy-deep); }
+
+  /* ============ Verificador de Alcance — estilos propios ============ */
+
+  .va-gate {
+    background: var(--paper-raised);
+    border: 1.5px solid var(--gold);
+    border-radius: 4px;
+    padding: 24px 24px 26px;
+    margin-bottom: 22px;
+    box-shadow: 0 12px 28px -18px rgba(16,38,59,0.35);
+  }
+  .va-gate h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.15rem; margin: 0 0 8px; color: var(--navy-deep); }
+  .va-gate .va-desc { color: var(--muted); font-size: 0.86rem; max-width: 66ch; margin: 0 0 16px; line-height: 1.6; }
+  .va-gate-options { display: grid; gap: 10px; }
+  .va-gate-option { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; cursor: pointer; }
+  .va-gate-option:has(input:checked) { border-color: var(--teal); background: var(--teal-soft); }
+  .va-gate-option input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--teal); flex-shrink: 0; }
+  .va-gate-option span { font-size: 0.88rem; line-height: 1.5; }
+
+  .va-reframe { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; font-size: 0.83rem; }
+  .va-reframe > div { background: var(--paper-raised); padding: 12px 14px; line-height: 1.55; }
+  .va-reframe .va-rf-head { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500; }
+  .va-reframe .va-rf-head.bad { color: var(--va-red); }
+  .va-reframe .va-rf-head.good { color: var(--teal-deep); }
+
+  .va-gate-warning { margin-top: 14px; background: var(--va-red-soft); color: var(--va-red); border-radius: 4px; padding: 12px 14px; font-size: 0.85rem; line-height: 1.55; display: none; }
+  .va-gate-warning.show { display: block; }
+
+  .va-dashboard { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 4px; padding: 22px 24px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 22px; box-shadow: 0 12px 28px -18px rgba(16,38,59,0.3); }
+  .va-dashboard .va-verdict { flex: 1; min-width: 220px; }
+  .va-verdict-label { font-size: 0.82rem; color: var(--muted); margin: 0 0 4px; }
+  .va-verdict-value { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin: 0; color: var(--navy-deep); }
+  .va-chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .va-chip { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 5px 10px; border-radius: 20px; border: 1px solid var(--line); color: var(--muted); background: var(--paper); }
+  .va-chip.ok { color: var(--va-green); border-color: #bfe0cf; background: var(--va-green-soft); }
+  .va-chip.mid { color: var(--va-amber); border-color: #ecd8b0; background: var(--va-amber-soft); }
+  .va-chip.bad { color: var(--va-red); border-color: #f0c9c4; background: var(--va-red-soft); }
+
+  .va-block { background: var(--paper-raised); border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 4px; margin-bottom: 14px; overflow: hidden; }
+  .va-block-head { padding: 20px 24px 4px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .va-block-head h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.02rem; margin: 0 0 6px; color: var(--navy-deep); }
+  .va-block-head .va-desc { color: var(--muted); font-size: 0.86rem; max-width: 60ch; margin: 0; line-height: 1.55; }
+  .va-status-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; padding: 4px 10px; border-radius: 20px; white-space: nowrap; margin-top: 2px; }
+  .va-status-badge.incompleto { background: var(--va-red-soft); color: var(--va-red); }
+  .va-status-badge.progreso { background: var(--va-amber-soft); color: var(--va-amber); }
+  .va-status-badge.listo { background: var(--va-green-soft); color: var(--va-green); }
+
+  .va-block-body { padding: 6px 24px 22px; }
+  .va-block textarea { width: 100%; min-height: 88px; border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--ink); resize: vertical; background: var(--paper); }
+  .va-block textarea:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+  .va-checklist { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 9px; }
+  .va-checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.87rem; line-height: 1.5; }
+  .va-checklist input[type=checkbox] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--teal); flex-shrink: 0; }
+  .va-checklist label { cursor: pointer; }
+  .va-fund-group { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal-deep); margin: 18px 0 6px; }
+  .va-fund-group:first-child { margin-top: 4px; }
+
+  .va-example { margin-top: 8px; margin-bottom: 22px; }
+  .va-example summary { cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--teal-deep); padding: 4px 0; }
+  .va-example-card { margin-top: 12px; background: var(--teal-soft); border-radius: 4px; padding: 16px 18px; font-size: 0.85rem; }
+  .va-example-card p { margin: 0 0 8px; line-height: 1.55; }
+  .va-example-card strong { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.7rem; text-transform: none; color: var(--navy); display: block; margin-bottom: 2px; }
+
+  .va-risk-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 0.87rem; line-height: 1.5; }
+  .va-risk-row:last-child { border-bottom: none; }
+  .va-risk-row input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--va-red); flex-shrink: 0; }
+
+  .va-summary { margin-top: 22px; background: linear-gradient(135deg, var(--navy-deep), var(--navy)); color: #edf1f5; border-radius: 6px; padding: 26px 26px; }
+  .va-summary h2 { font-family: 'Fraunces', serif; font-size: 1.1rem; margin: 0 0 12px; font-weight: 600; color: #fff; }
+  .va-summary ul { margin: 0; padding-left: 18px; }
+  .va-summary li { margin-bottom: 8px; font-size: 0.87rem; color: #d3dbe4; line-height: 1.55; }
+  .va-summary-empty { color: #8fa0b3; font-size: 0.87rem; }
+
+  .va-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+  .va-actions button { font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 600; padding: 11px 18px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; }
+  .va-actions button.primary { background: var(--teal); color: #fff; }
+  .va-actions button.primary:hover { background: var(--teal-deep); }
+  .va-actions button.ghost { background: transparent; color: var(--muted); border-color: var(--line); }
+  .va-actions button.ghost:hover { border-color: var(--muted); color: var(--ink); }
+  .va-save-note { font-size: 0.78rem; color: var(--muted); margin-top: 10px; font-family: 'IBM Plex Mono', monospace; min-height: 16px; }
+
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 30px 0 14px; }
+  .footnote { margin-top: 26px; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+</style>
+<link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+<div id="sidebar-placeholder"></div>
+
+<div class="page-head">
+  <div class="eyebrow">PROYECTO DE GRADO · HERRAMIENTA DE AUTODIAGNÓSTICO</div>
+  <h1>Verificador de Alcance</h1>
+  <p class="lede">Completen cada componente del Mapa de Alcance con el contenido real de su proyecto y respondan el checklist en equipo. La herramienta muestra qué partes están listas y cuáles necesitan más trabajo antes de presentarlas a su contraparte.</p>
+</div>
+
+<div class="container">
+
+  <div class="intro-card">
+    <p>El alcance define <strong>qué incluye el proyecto y qué queda explícitamente fuera</strong>. Un alcance mal definido es la causa más común de atrasos y fricciones con la contraparte durante el trabajo de campo.</p>
+    <p>Completen esta herramienta como equipo, antes de la primera reunión formal con su contraparte. Todo lo que escriban se guarda solo en este navegador — no se envía a ningún servidor.</p>
+  </div>
+
+  <section class="va-gate">
+    <h2>Antes de todo: ¿es un tema de gestión de personas u organizacional?</h2>
+    <p class="va-desc">Si el equipo viene de un pregrado en Psicología, es normal inclinarse sin darse cuenta hacia una intervención clínica o individual. Este magíster forma para intervenir a nivel organizacional — en procesos, cultura, liderazgo y prácticas de gestión de personas — no para el diagnóstico o tratamiento clínico de una persona en particular.</p>
+    <div class="va-gate-options">
+      <label class="va-gate-option">
+        <input type="radio" name="pertinencia" value="orggest" data-gate>
+        <span>Nuestro proyecto aborda un problema de gestión de personas u organizacional: cultura, liderazgo, desempeño, compensaciones, clima, diversidad, procesos de cambio, etc., a nivel de equipo o de la organización.</span>
+      </label>
+      <label class="va-gate-option">
+        <input type="radio" name="pertinencia" value="clinico" data-gate>
+        <span>Nuestro proyecto tiene un componente clínico o individual central: evaluación psicológica, diagnóstico de salud mental, o intervención terapéutica sobre una persona en particular.</span>
+      </label>
+      <label class="va-gate-option">
+        <input type="radio" name="pertinencia" value="dudoso" data-gate>
+        <span>No estamos seguros — nuestro tema mezcla ambas cosas, o es un problema de gestión general sin ningún ángulo de personas.</span>
+      </label>
+    </div>
+    <div class="va-reframe">
+      <div class="va-rf-head bad">Clínico / individual (fuera de alcance)</div>
+      <div class="va-rf-head good">Gestión de personas / organizacional (dentro de alcance)</div>
+      <div>Evaluar el nivel de estrés laboral y ansiedad en un grupo de trabajadores de un call center.</div>
+      <div>Diseñar un programa de gestión del bienestar y calidad de vida laboral para reducir el ausentismo asociado a estrés en un call center.</div>
+      <div>Diagnosticar el perfil de personalidad de los líderes de un equipo para definir un plan de intervención terapéutica individual.</div>
+      <div>Diseñar un modelo de desarrollo de liderazgo y gestión de equipos de alto desempeño para fortalecer las competencias directivas del equipo.</div>
+    </div>
+    <p class="va-gate-warning" id="gate-warning">Este tema, tal como está planteado, corresponde a una intervención clínica o individual. Antes de seguir completando el alcance, conversen con su profesor guía para reformularlo hacia un problema de gestión de personas u organizacional — miren la tabla de arriba como referencia.</p>
+  </section>
+
+  <div class="va-dashboard">
+    <div class="va-verdict">
+      <p class="va-verdict-label">Diagnóstico general</p>
+      <p class="va-verdict-value" id="verdict-text">Aún no hay información suficiente</p>
+    </div>
+    <div class="va-chip-row" id="chip-row"></div>
+  </div>
+
+  <!-- TÍTULO -->
+  <section class="va-block" data-section="titulo">
+    <div class="va-block-head">
+      <div>
+        <h2>Título del Proyecto</h2>
+        <p class="va-desc">El nombre del proyecto. Es distinto del objetivo: no lleva verbo de acción, es una frase nominal breve.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <textarea data-text style="min-height:56px;" placeholder="Ej.: Modelo de gestión del clima organizacional en un Centro de Distribución"></textarea>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="t1" data-check><label for="t1">Es breve y directo (idealmente menos de 20 palabras)</label></li>
+        <li><input type="checkbox" id="t2" data-check><label for="t2">Incluye el tema central y el ámbito o institución donde se enmarca</label></li>
+        <li><input type="checkbox" id="t3" data-check><label for="t3">Es una frase nominal, no una oración con verbo de acción (el verbo va en el objetivo, no aquí)</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- OBJETIVO SMART -->
+  <section class="va-block" data-section="objetivo">
+    <div class="va-block-head">
+      <div>
+        <h2>Objetivo General (SMART)</h2>
+        <p class="va-desc">El objetivo del proyecto, formulado con verbo de acción. Debe cumplir criterio SMART.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <textarea data-text placeholder="Ej.: Diseñar un modelo de gestión del clima organizacional para el Centro de Distribución de una empresa de retail, para que la Jefatura de Personas decida sobre las iniciativas de retención del Plan 2025–2027..."></textarea>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="d1" data-check><label for="d1"><strong>Específico (S):</strong> el objetivo nombra una acción concreta (proponer, evaluar, diseñar, diagnosticar…) sobre un problema y una unidad/población acotada — no es un tema general</label></li>
+        <li><input type="checkbox" id="d2" data-check><label for="d2"><strong>Medible (M):</strong> se puede verificar cuando el objetivo está cumplido, a través de un entregable, indicador o resultado observable</label></li>
+        <li><input type="checkbox" id="d3" data-check><label for="d3"><strong>Alcanzable (A):</strong> es razonable lograrlo con el tiempo, el acceso a datos y los recursos disponibles para un Proyecto de Grado</label></li>
+        <li><input type="checkbox" id="d4" data-check><label for="d4"><strong>Relevante (R):</strong> responde a un problema real de gestión de personas o efectividad organizacional, y queda claro para quién es útil o quién tomará decisiones con sus resultados</label></li>
+        <li><input type="checkbox" id="d5" data-check><label for="d5"><strong>Con plazo (T):</strong> puede completarse dentro del plazo de Proyecto de Grado I y II, y queda claro el contexto institucional donde se enmarca</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FUNDAMENTACIÓN TEÓRICA -->
+  <section class="va-block" data-section="fundamentacion">
+    <div class="va-block-head">
+      <div>
+        <h2>Fundamentación Teórica</h2>
+        <p class="va-desc">Marca las asignaturas de la malla del magíster cuyos contenidos sustentan teóricamente el proyecto.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <p style="font-size:0.82rem;color:var(--muted);margin:0 0 12px;">Seleccionen al menos 2. No es necesario justificar cada una en detalle, pero el equipo debe poder explicar la relación si se lo preguntan en la defensa.</p>
+
+      <p class="va-fund-group">Línea Psicología del Trabajo y las Organizaciones</p>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="f01" data-check data-fund><label for="f01">Comportamiento y Desarrollo Organizacional</label></li>
+        <li><input type="checkbox" id="f02" data-check data-fund><label for="f02">Gestión de la Diversidad e Inclusión en Organizaciones</label></li>
+        <li><input type="checkbox" id="f03" data-check data-fund><label for="f03">Cultura y Gestión de la Transformación Organizacional</label></li>
+        <li><input type="checkbox" id="f04" data-check data-fund><label for="f04">Liderazgo y Equipos de Alto Desempeño</label></li>
+        <li><input type="checkbox" id="f05" data-check data-fund><label for="f05">Salud y Calidad de Vida Laboral</label></li>
+        <li><input type="checkbox" id="f06" data-check data-fund><label for="f06">Medición y Gestión del Clima</label></li>
+      </ul>
+
+      <p class="va-fund-group">Línea Gestión Organizacional</p>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="f07" data-check data-fund><label for="f07">Compliance y Ética Corporativa</label></li>
+        <li><input type="checkbox" id="f08" data-check data-fund><label for="f08">Dirección Estratégica</label></li>
+        <li><input type="checkbox" id="f09" data-check data-fund><label for="f09">People Analytics y Métricas en Gestión de Personas</label></li>
+        <li><input type="checkbox" id="f10" data-check data-fund><label for="f10">Economía Laboral</label></li>
+        <li><input type="checkbox" id="f11" data-check data-fund><label for="f11">Gestión del Desempeño y Efectividad Organizacional</label></li>
+        <li><input type="checkbox" id="f12" data-check data-fund><label for="f12">Gestión de Compensaciones e Incentivos</label></li>
+      </ul>
+
+      <textarea data-text style="margin-top:16px;" placeholder="Opcional: en una o dos frases, ¿cómo se conecta cada asignatura marcada con el proyecto?"></textarea>
+    </div>
+  </section>
+
+  <!-- ENTREGABLES -->
+  <section class="va-block" data-section="entregables">
+    <div class="va-block-head">
+      <div>
+        <h2>Entregables</h2>
+        <p class="va-desc">Resultados concretos del proyecto o de sus procesos. Pueden incluir hitos.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <textarea data-text placeholder="Ej.: Diagnóstico de clima y motivos de salida / Benchmark de prácticas de retención / Propuesta de modelo de gestión del clima"></textarea>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="e1" data-check><label for="e1">Cada entregable es un sustantivo verificable (un informe, un modelo, un diagnóstico), no una actividad ("analizar", "revisar")</label></li>
+        <li><input type="checkbox" id="e2" data-check><label for="e2">Se puede saber, sin ambigüedad, cuándo un entregable está terminado</label></li>
+        <li><input type="checkbox" id="e3" data-check><label for="e3">La lista de entregables es consistente con la descripción del proyecto (no aparece nada nuevo que no se anticipó)</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- LÍMITES -->
+  <section class="va-block" data-section="limites">
+    <div class="va-block-head">
+      <div>
+        <h2>Límites</h2>
+        <p class="va-desc">Fronteras razonables del proyecto: qué está dentro y qué está explícitamente fuera.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <textarea data-text placeholder="Ej.: Solo el Centro de Distribución de la Región Metropolitana. No incluye otras áreas ni sucursales de venta (posible extensión futura, fuera de este proyecto)"></textarea>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="l1" data-check><label for="l1">Se nombra explícitamente al menos una exclusión (qué NO se va a hacer), no solo lo que sí se hará</label></li>
+        <li><input type="checkbox" id="l2" data-check><label for="l2">Los límites tienen una dimensión concreta: geográfica, temporal, organizacional o funcional</label></li>
+        <li><input type="checkbox" id="l3" data-check><label for="l3">Si algo queda fuera "por ahora", se deja constancia de que es una extensión futura y no parte de este proyecto</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- RESTRICCIONES -->
+  <section class="va-block" data-section="restricciones">
+    <div class="va-block-head">
+      <div>
+        <h2>Restricciones</h2>
+        <p class="va-desc">Tiempo, acceso a datos, presupuesto, autorizaciones.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <textarea data-text placeholder="Ej.: Plazo 5 meses / Acceso a datos de rotación de los últimos 12 meses / 2 hrs/mes con la Jefatura de Personas"></textarea>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="r1" data-check><label for="r1">Hay al menos una restricción cuantificada (un plazo, una cantidad de horas, un presupuesto)</label></li>
+        <li><input type="checkbox" id="r2" data-check><label for="r2">Se menciona el acceso real a datos o informantes necesarios para avanzar</label></li>
+        <li><input type="checkbox" id="r3" data-check><label for="r3">Se identifican las autorizaciones o aprobaciones necesarias (comité de ética, dirección, RR.HH., etc.)</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SUPUESTOS -->
+  <section class="va-block" data-section="supuestos">
+    <div class="va-block-head">
+      <div>
+        <h2>Supuestos</h2>
+        <p class="va-desc">Condiciones que se dan por ciertas para que el proyecto funcione.</p>
+      </div>
+      <span class="va-status-badge incompleto" data-badge>Incompleto</span>
+    </div>
+    <div class="va-block-body">
+      <textarea data-text placeholder="Ej.: El área de Personas mantiene la disponibilidad de datos comprometida / La Jefatura aprueba encuestas al personal en el Mes 2"></textarea>
+      <ul class="va-checklist">
+        <li><input type="checkbox" id="s1" data-check><label for="s1">Cada supuesto describe algo que, si no se cumple, afectaría directamente el avance del proyecto</label></li>
+        <li><input type="checkbox" id="s2" data-check><label for="s2">Los supuestos no son en realidad restricciones disfrazadas (algo que ya se sabe que es un límite, no una condición incierta)</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <details class="va-example">
+    <summary>Ver ejemplo completo: Gestión del Clima, Centro de Distribución de Retail</summary>
+    <div class="va-example-card">
+      <p><strong>Objetivo</strong>Diseñar un modelo de gestión del clima organizacional y bienestar laboral para reducir la rotación voluntaria en el Centro de Distribución de una empresa de retail (Plan Estratégico de Personas 2025–2027).</p>
+      <p><strong>Entregables</strong>Diagnóstico de clima y motivos de salida · Benchmark de prácticas de retención · Propuesta de modelo de gestión del clima.</p>
+      <p><strong>Límites</strong>Solo el Centro de Distribución de la Región Metropolitana. No incluye otras áreas ni sucursales de venta.</p>
+      <p><strong>Restricciones</strong>Plazo de 5 meses · acceso a datos de rotación de los últimos 12 meses · 2 hrs/mes con la Jefatura de Personas.</p>
+      <p><strong>Supuestos</strong>El área de Personas mantiene la disponibilidad de datos comprometida · la Jefatura aprueba encuestas al personal en el mes 2.</p>
+    </div>
+  </details>
+
+  <!-- SCOPE CREEP -->
+  <section class="va-block" data-section="creep">
+    <div class="va-block-head">
+      <div>
+        <h2>Riesgo de Scope Creep</h2>
+        <p class="va-desc">Marquen lo que aplique a su proyecto tal como está hoy. Cada casilla marcada es una señal de alerta, no un logro.</p>
+      </div>
+      <span class="va-status-badge listo" data-badge-creep>Sin señales</span>
+    </div>
+    <div class="va-block-body">
+      <div class="va-risk-row"><input type="checkbox" data-risk id="c1"><label for="c1">La contraparte ya ha sugerido "de paso" agregar algo que no estaba en el plan original</label></div>
+      <div class="va-risk-row"><input type="checkbox" data-risk id="c2"><label for="c2">No existe un documento o acuerdo escrito del alcance, solo conversaciones</label></div>
+      <div class="va-risk-row"><input type="checkbox" data-risk id="c3"><label for="c3">Los límites del proyecto podrían interpretarse de más de una forma por distintas personas del equipo</label></div>
+      <div class="va-risk-row"><input type="checkbox" data-risk id="c4"><label for="c4">Ya sienten que el proyecto "creció" respecto a lo que se conversó al inicio</label></div>
+      <div class="va-risk-row"><input type="checkbox" data-risk id="c5"><label for="c5">No hay restricciones de tiempo o acceso a datos claramente escritas</label></div>
+    </div>
+  </section>
+
+  <div class="va-summary">
+    <h2>Recomendaciones</h2>
+    <ul id="rec-list"></ul>
+    <p class="va-summary-empty" id="rec-empty">Completa los campos de arriba para ver recomendaciones específicas aquí.</p>
+  </div>
+
+  <div class="va-actions">
+    <button class="primary" id="save-btn">Guardar avance</button>
+    <button class="ghost" id="copy-btn">Copiar resumen</button>
+    <button class="ghost" id="reset-btn">Reiniciar</button>
+  </div>
+  <p class="va-save-note" id="save-note"></p>
+
+  <p class="footnote">Basado en el Mapa de Alcance — PMBOK® Guide (8.ª ed.), Project Management Institute (2025). Magíster en Gestión de Personas y Efectividad Organizacional — Universidad San Sebastián · Proyecto de Grado.</p>
+
+</div>
+<script src="sidebar.js"></script>
+<script>
+(function(){
+  var STORAGE_KEY = 'mgpe_verificador_alcance_v1';
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.va-block[data-section]:not([data-section="creep"])'));
+
+  function sectionStatus(block){
+    if(block.getAttribute('data-section') === 'fundamentacion'){
+      var fundChecked = Array.prototype.slice.call(block.querySelectorAll('[data-fund]')).filter(function(c){return c.checked;}).length;
+      if(fundChecked === 0) return 'incompleto';
+      if(fundChecked === 1) return 'progreso';
+      return 'listo';
+    }
+    var text = block.querySelector('[data-text]').value.trim();
+    var checks = Array.prototype.slice.call(block.querySelectorAll('[data-check]'));
+    var checkedCount = checks.filter(function(c){return c.checked;}).length;
+    if(text.length < 15 && checkedCount === 0) return 'incompleto';
+    if(text.length >= 15 && checkedCount === checks.length) return 'listo';
+    return 'progreso';
+  }
+
+  var STATUS_LABEL = {incompleto:'Incompleto', progreso:'En progreso', listo:'Listo'};
+
+  function refreshBadge(block){
+    var status = sectionStatus(block);
+    var badge = block.querySelector('[data-badge]');
+    badge.className = 'va-status-badge ' + status;
+    badge.textContent = STATUS_LABEL[status];
+    return status;
+  }
+
+  function refreshCreep(){
+    var risks = Array.prototype.slice.call(document.querySelectorAll('[data-risk]'));
+    var count = risks.filter(function(r){return r.checked;}).length;
+    var badge = document.querySelector('[data-badge-creep]');
+    if(count === 0){
+      badge.className = 'va-status-badge listo';
+      badge.textContent = 'Sin señales';
+    } else if(count <= 2){
+      badge.className = 'va-status-badge progreso';
+      badge.textContent = count + ' señal(es) de alerta';
+    } else {
+      badge.className = 'va-status-badge incompleto';
+      badge.textContent = count + ' señales de alerta';
+    }
+    return count;
+  }
+
+  var CHIP_LABELS = {
+    titulo:'Título',
+    objetivo:'Objetivo',
+    fundamentacion:'Fundamentación',
+    entregables:'Entregables',
+    limites:'Límites',
+    restricciones:'Restricciones',
+    supuestos:'Supuestos'
+  };
+
+  var SECTION_NAMES = {
+    titulo:'el Título del Proyecto',
+    objetivo:'el Objetivo General',
+    fundamentacion:'la Fundamentación Teórica',
+    entregables:'los Entregables',
+    limites:'los Límites',
+    restricciones:'las Restricciones',
+    supuestos:'los Supuestos'
+  };
+
+  function getGateValue(){
+    var checked = document.querySelector('[data-gate]:checked');
+    return checked ? checked.value : null;
+  }
+
+  function refreshGate(){
+    var value = getGateValue();
+    var warning = document.getElementById('gate-warning');
+    warning.classList.toggle('show', value === 'clinico' || value === 'dudoso');
+    return value;
+  }
+
+  function refreshAll(){
+    var gateValue = refreshGate();
+    var statuses = {};
+    sections.forEach(function(block){
+      statuses[block.getAttribute('data-section')] = refreshBadge(block);
+    });
+    var creepCount = refreshCreep();
+
+    var listoCount = Object.keys(statuses).filter(function(k){return statuses[k] === 'listo';}).length;
+    var incompletoCount = Object.keys(statuses).filter(function(k){return statuses[k] === 'incompleto';}).length;
+    var total = Object.keys(statuses).length;
+
+    var chipRow = document.getElementById('chip-row');
+    chipRow.innerHTML = '';
+    Object.keys(statuses).forEach(function(key){
+      var chip = document.createElement('span');
+      var cls = statuses[key] === 'listo' ? 'ok' : (statuses[key] === 'progreso' ? 'mid' : 'bad');
+      chip.className = 'va-chip ' + cls;
+      chip.textContent = CHIP_LABELS[key] || (key.charAt(0).toUpperCase() + key.slice(1));
+      chipRow.appendChild(chip);
+    });
+
+    var verdictEl = document.getElementById('verdict-text');
+    if(gateValue === 'clinico'){
+      verdictEl.textContent = 'Tema fuera de alcance del programa — revisen la pertinencia disciplinar primero';
+    } else if(gateValue === 'dudoso'){
+      verdictEl.textContent = 'Aclaren primero si el tema es de gestión de personas u organizacional antes de seguir';
+    } else if(!gateValue){
+      verdictEl.textContent = 'Respondan primero si el tema es de gestión de personas u organizacional';
+    } else if(incompletoCount > 0){
+      verdictEl.textContent = 'Alcance aún no está listo para revisión';
+    } else if(listoCount === total && creepCount === 0){
+      verdictEl.textContent = 'Alcance sólido — listo para su contraparte';
+    } else if(listoCount === total && creepCount > 0){
+      verdictEl.textContent = 'Contenido completo, pero hay riesgo de scope creep';
+    } else {
+      verdictEl.textContent = 'En buen camino — quedan detalles por afinar';
+    }
+
+    var recList = document.getElementById('rec-list');
+    var recEmpty = document.getElementById('rec-empty');
+    recList.innerHTML = '';
+    var recs = [];
+
+    if(gateValue === 'clinico'){
+      recs.push('El tema tiene un componente clínico o individual central. Antes de seguir con el resto del formulario, reformúlenlo hacia un problema de gestión de personas u organizacional (revisen la tabla de reformulación arriba) y conversen con su profesor guía.');
+    } else if(gateValue === 'dudoso'){
+      recs.push('Aclaren con su profesor guía si el tema es de gestión de personas/organizacional o tiene un componente clínico o individual que deba acotarse antes de definir el resto del alcance.');
+    } else if(!gateValue){
+      recs.push('Respondan la pregunta de pertinencia disciplinar al inicio antes de completar el resto del formulario.');
+    }
+
+    Object.keys(statuses).forEach(function(key){
+      if(key === 'fundamentacion'){
+        if(statuses[key] === 'incompleto'){
+          recs.push('Aún no marcan ninguna asignatura de la malla como respaldo teórico. Seleccionen al menos dos que se conecten con el proyecto.');
+        } else if(statuses[key] === 'progreso'){
+          recs.push('Marcaron solo una asignatura de respaldo teórico — conviene identificar al menos una segunda para fundamentar mejor el proyecto.');
+        }
+        return;
+      }
+      if(statuses[key] === 'incompleto'){
+        recs.push('Aún falta desarrollar ' + SECTION_NAMES[key] + ': agreguen contenido y revisen el checklist de esa sección.');
+      } else if(statuses[key] === 'progreso'){
+        recs.push('Revisen el checklist de ' + SECTION_NAMES[key] + ' — hay criterios sin marcar que probablemente valga la pena resolver antes de avanzar.');
+      }
+    });
+    if(creepCount >= 3){
+      recs.push('El riesgo de scope creep es alto: formalicen un documento de alcance por escrito antes de seguir avanzando con su contraparte.');
+    } else if(creepCount > 0){
+      recs.push('Hay señales de scope creep. Conversen con su contraparte para dejar los límites por escrito.');
+    }
+
+    if(recs.length === 0){
+      recEmpty.style.display = 'block';
+    } else {
+      recEmpty.style.display = 'none';
+      recs.forEach(function(text){
+        var li = document.createElement('li');
+        li.textContent = text;
+        recList.appendChild(li);
+      });
+    }
+  }
+
+  function buildSummaryText(){
+    var gateLabels = {orggest:'Gestión de personas / organizacional', clinico:'Componente clínico o individual central', dudoso:'No está claro aún'};
+    var gateValue = getGateValue();
+    var lines = ['RESUMEN DE ALCANCE\n', 'PERTINENCIA DISCIPLINAR: ' + (gateLabels[gateValue] || '(sin responder)') + '\n'];
+    sections.forEach(function(block){
+      var title = block.querySelector('h2').textContent;
+      if(block.getAttribute('data-section') === 'fundamentacion'){
+        var picked = Array.prototype.slice.call(block.querySelectorAll('[data-fund]:checked')).map(function(c){
+          return c.closest('li').querySelector('label').textContent;
+        });
+        var note = block.querySelector('[data-text]').value.trim();
+        var body = (picked.length ? picked.map(function(p){return '- ' + p;}).join('\n') : '(ninguna asignatura marcada)') + (note ? ('\nNota: ' + note) : '');
+        lines.push(title.toUpperCase() + '\n' + body + '\n');
+        return;
+      }
+      var text = block.querySelector('[data-text]').value.trim() || '(sin completar)';
+      lines.push(title.toUpperCase() + '\n' + text + '\n');
+    });
+    var creepCount = document.querySelectorAll('[data-risk]:checked').length;
+    lines.push('SEÑALES DE SCOPE CREEP MARCADAS: ' + creepCount);
+    return lines.join('\n');
+  }
+
+  function collectState(){
+    var state = {sections:{}, risks:{}, gate:getGateValue()};
+    sections.forEach(function(block){
+      var key = block.getAttribute('data-section');
+      state.sections[key] = {
+        text: block.querySelector('[data-text]').value,
+        checks: Array.prototype.slice.call(block.querySelectorAll('[data-check]')).map(function(c){return c.checked;})
+      };
+    });
+    Array.prototype.slice.call(document.querySelectorAll('[data-risk]')).forEach(function(r){
+      state.risks[r.id] = r.checked;
+    });
+    return state;
+  }
+
+  function applyState(state){
+    if(!state) return;
+    sections.forEach(function(block){
+      var key = block.getAttribute('data-section');
+      var saved = state.sections && state.sections[key];
+      if(!saved) return;
+      block.querySelector('[data-text]').value = saved.text || '';
+      var checks = Array.prototype.slice.call(block.querySelectorAll('[data-check]'));
+      checks.forEach(function(c, i){ c.checked = !!(saved.checks && saved.checks[i]); });
+    });
+    if(state.risks){
+      Array.prototype.slice.call(document.querySelectorAll('[data-risk]')).forEach(function(r){
+        r.checked = !!state.risks[r.id];
+      });
+    }
+    if(state.gate){
+      var gateInput = document.querySelector('[data-gate][value="' + state.gate + '"]');
+      if(gateInput) gateInput.checked = true;
+    }
+  }
+
+  document.addEventListener('input', refreshAll);
+  document.addEventListener('change', refreshAll);
+
+  document.getElementById('save-btn').addEventListener('click', function(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+      document.getElementById('save-note').textContent = 'Guardado en este navegador — ' + new Date().toLocaleTimeString();
+    }catch(e){
+      document.getElementById('save-note').textContent = 'No se pudo guardar en este navegador.';
+    }
+  });
+
+  document.getElementById('reset-btn').addEventListener('click', function(){
+    if(!confirm('¿Borrar todo el contenido ingresado?')) return;
+    sections.forEach(function(block){
+      block.querySelector('[data-text]').value = '';
+      Array.prototype.slice.call(block.querySelectorAll('[data-check]')).forEach(function(c){c.checked = false;});
+    });
+    Array.prototype.slice.call(document.querySelectorAll('[data-risk]')).forEach(function(r){r.checked = false;});
+    Array.prototype.slice.call(document.querySelectorAll('[data-gate]')).forEach(function(g){g.checked = false;});
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    document.getElementById('save-note').textContent = 'Contenido reiniciado.';
+    refreshAll();
+  });
+
+  document.getElementById('copy-btn').addEventListener('click', function(){
+    var text = buildSummaryText();
+    function fallbackCopy(){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try{ document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(fallbackCopy);
+    } else {
+      fallbackCopy();
+    }
+    document.getElementById('save-note').textContent = 'Resumen copiado al portapapeles.';
+  });
+
+  try{
+    var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    applyState(saved);
+  }catch(e){}
+
+  refreshAll();
+})();
+</script>
+</body>
+</html>
